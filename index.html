@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Expense Tracker</title>
+</head>
+<body class="bg-slate-50 text-slate-900">
+    <div class="max-w-1xl mx-auto px-4 py-6 space-y-6">
+        <!-- Top row: summary cards left, filter panel right -->
+        <div class="grid grid-cols-1 lg:grid-cols-[0.5fr_0.5fr] gap-6">
+            <section class="bg-white rounded-3xl shadow-lg p-6">
+                <div class="flex items-center justify-between ">
+                    <div>
+                        <h1 class="text-2xl font-semibold text-slate-900">Summary</h1>
+                        <p class="text-sm text-slate-500">View your main spending metrics.</p>
+                    </div>
+                </div>
+                <div class="grid gap-4 sm:grid-cols-3">
+                    <div class="rounded-3xl border border-slate-100 bg-slate-150 p-5">
+                        <p class="text-sm text-slate-500">Total Expenses</p>
+                        <p id="total-amount" class="mt-3 text-1xl font-bold text-indigo-600"> 0 PKR</p>
+                    </div>
+                    <div class="rounded-3xl border border-slate-100 bg-slate-50 p-5">
+                        <p class="text-sm text-slate-500">Total Entries</p>
+                        <p id="total-count" class="mt-3 text-1xl font-bold text-slate-900">0</p>
+                    </div>
+                    <div class="rounded-3xl border border-slate-100 bg-slate-50 p-5">
+                        <p class="text-sm text-slate-500">Top Category</p>
+                        <p id="top-category" class="mt-3 text-1xl font-bold text-slate-900">—</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-3xl shadow-lg p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 class="text-2xl font-semibold text-slate-900">Filter</h2>
+                        <p class="text-sm text-slate-500">Narrow down the data quickly.</p>
+                    </div>
+                </div>
+                <div class="grid gap-4 sm:grid-cols-3">
+                    <div>
+                        <label for="filter-category" class="block text-sm text-slate-600 mb-1">Category</label>
+                        <select id="filter-category"
+                            class="w-full border border-slate-300 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                            <option value="">All Categories</option>
+                            <option>Food</option>
+                            <option>Transport</option>
+                            <option>Shopping</option>
+                            <option>Bills</option>
+                            <option>Health</option>
+                            <option>Education</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="filter-date" class="block text-sm text-slate-600 mb-1">Date</label>
+                        <input id="filter-date" type="date"
+                            class="w-full border border-slate-300 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+                    </div>
+                    <div class="flex items-end">
+                        <button onclick="clearFilters()"
+                            class="w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100 transition">
+                            Clear Filters
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Middle row: large form on left, chart on right -->
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-6">
+            <section class="bg-white rounded-3xl shadow-lg p-6">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-semibold text-slate-900">Add Expense</h2>
+                    <p class="text-sm text-slate-500">Enter expense details with ease.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="title" class="block text-sm text-slate-600 mb-1">Title *</label>
+                        <input id="title" type="text" placeholder="e.g. Groceries"
+                            class="w-full border border-slate-300 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+                    </div>
+                    <div>
+                        <label for="amount" class="block text-sm text-slate-600 mb-1">Amount (PKR) *</label>
+                        <input id="amount" type="number" placeholder="e.g. 500" min="1"
+                            class="w-full border border-slate-300 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+                    </div>
+                    <div>
+                        <label for="category" class="block text-sm text-slate-600 mb-1">Category *</label>
+                        <select id="category"
+                            class="w-full border border-slate-300 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                            <option value="">-- Select Category --</option>
+                            <option>Food</option>
+                            <option>Transport</option>
+                            <option>Shopping</option>
+                            <option>Bills</option>
+                            <option>Health</option>
+                            <option>Education</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="date" class="block text-sm text-slate-600 mb-1">Date *</label>
+                        <input id="date" type="date"
+                            class="w-full border border-slate-300 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="notes" class="block text-sm text-slate-600 mb-1">Notes (optional)</label>
+                        <input id="notes" type="text" placeholder="Any extra detail..."
+                            class="w-full border border-slate-300 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+                    </div>
+                </div>
+                <p id="error-msg" class="text-red-500 text-sm mt-3 hidden"></p>
+                <button id="add-btn"
+                    class="mt-5 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-2xl transition">+ Add Expense</button>
+            </section>
+
+            <section class="bg-white rounded-3xl shadow-lg p-6">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-semibold text-slate-900">Chart</h2>
+                    <p class="text-sm text-slate-500">Expense distribution by category.</p>
+                </div>
+                <div class="h-[320px] w-full justify-center items-center flex">
+                    <canvas id="expense-chart" class="h-full w-full "></canvas>
+                </div>
+            </section>
+        </div>
+
+        <!-- Bottom row: expense list full width -->
+        <section class="bg-white rounded-3xl shadow-lg p-6">
+            <div class="mb-6">
+                <h2 class="text-2xl font-semibold text-slate-900">Expense List</h2>
+                <p class="text-sm text-slate-500">Review all recorded expenses below.</p>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full min-w-[720px] divide-y divide-slate-200">
+                    <thead class="bg-slate-50 text-slate-600">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase">Title</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase">Amount</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase">Category</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase">Date</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase">Notes</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold uppercase">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expense-tbody" class="bg-white text-slate-700">
+                        <tr>
+                            <td colspan="6" class="py-10 text-center text-sm text-slate-400">No expenses yet. Add one above!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
