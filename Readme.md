@@ -2,17 +2,17 @@ Expense Tracker SPA
 
 A clean, responsive Single Page Application to track daily expenses built with Vanilla JS, Tailwind CSS, and Chart.js.
 
-Live Demo:
+Live Demo: 
 
 Features
 
-1. Summary cards — Total Expenses, Total Entries, Top Category
+1. Summary cards:Total Expenses, Total Entries, Top Category
 2. Filter by Category and Date
 3. Add expenses with Title, Amount, Category, Date, and Notes
-4. Pie chart — spending breakdown by category
+4. Pie chart spending breakdown by category
 5. Edit and Delete any expense entry
 6. Data persists via LocalStorage — no backend needed
-7. Fully responsive — works on mobile and desktop
+7. Fully responsive works on mobile and desktop
 
 Tech Stack
 
